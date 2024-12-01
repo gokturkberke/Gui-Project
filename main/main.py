@@ -184,11 +184,13 @@ class SettingsWindow(tk.Toplevel):
         tk.Label(self, text="Language Settings").pack(pady=20)
 
         tk.Button(self, text="English", command=lambda: self.set_language("en")).pack(pady=5)
-        tk.Button(self, text="Spanish", command=lambda: self.set_language("es")).pack(pady=5)
+        tk.Button(self, text="Turkish", command=lambda: self.set_language("tr")).pack(pady=5)
 
     def set_language(self, lang):
         self.master.language = lang
-        messagebox.showinfo("Language Changed", f"Language set to {lang.upper()}!")
+        language_name = "English" if lang == "en" else "Turkish"
+        messagebox.showinfo("Language Changed", f"Language set to {language_name}!")
+
 
 # Run the Application
 if __name__ == "__main__":
