@@ -48,4 +48,7 @@ class SettingsViewModel:
 
     def get_translation(self, key, **kwargs):
         translation = TRANSLATIONS.get(self.language, {}).get(key, key)
-        return translation.format(**kwargs)
+        try:
+            return translation.format(**kwargs)
+        except KeyError:
+            return translation

@@ -30,12 +30,40 @@ class MainView(tk.Tk):
         TransactionView(self, "Expense", self.viewmodel)
 
     def open_view_transactions(self):
-        # Implement view transactions logic
-        pass
+        transactions_window = tk.Toplevel(self)
+        transactions_window.title("View Transactions")
+        transactions_window.geometry("600x400")
+
+        transactions = self.viewmodel.get_transactions()
+
+        tree = ttk.Treeview(transactions_window, columns=("Date", "Type", "Amount", "Description"), show='headings')
+        tree.heading("Date", text="Date")
+        tree.heading("Type", text="Type")
+        tree.heading("Amount", text="Amount")
+        tree.heading("Description", text="Description")
+
+        for transaction in transactions:
+            tree.insert("", "end", values=(transaction.date, transaction.type, transaction.amount, transaction.description))
+
+        tree.pack(expand=True, fill='both')
 
     def open_budget_overview(self):
-        # Implement budget overview logic
-        pass
+        budget_window = tk.Toplevel(self)
+        budget_window.title("Budget Overview")
+        budget_window.geometry("600x400")
+
+        budget_data = self.viewmodel.get_budget_overview()
+
+        tree = ttk.Treeview(budget_window, columns=("Category", "Allocated", "Spent", "Remaining"), show='headings')
+        tree.heading("Category", text="Category")
+        tree.heading("Allocated", text="Allocated")
+        tree.heading("Spent", text="Spent")
+        tree.heading("Remaining", text="Remaining")
+
+        for category, data in budget_data.items():
+            tree.insert("", "end", values=(category, data['allocated'], data['spent'], data['remaining']))
+
+        tree.pack(expand=True, fill='both')
 
     def open_settings(self):
         SettingsView(self, self.viewmodel)
