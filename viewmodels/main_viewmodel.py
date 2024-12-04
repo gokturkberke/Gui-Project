@@ -32,11 +32,18 @@ class MainViewModel:
     def get_transactions(self):
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT date, type, amount, category FROM transactions")
+        cursor.execute("SELECT id, date, type, amount, category FROM transactions")
         rows = cursor.fetchall()
         conn.close()
-        transactions = [Transaction(row[1], row[3], row[2], row[0]) for row in rows]
+        transactions = [Transaction(row[2], row[4], row[3], row[1], row[0]) for row in rows]
         return transactions
+
+    def delete_transaction(self, transaction_id):
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))
+        conn.commit()
+        conn.close()
 
     def get_budget_overview(self):
         conn = sqlite3.connect(DB_NAME)
