@@ -45,6 +45,17 @@ class MainViewModel:
         conn.commit()
         conn.close()
 
+    def update_transaction(self, transaction_id, transaction_type, category, amount, date):
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE transactions
+            SET type = ?, category = ?, amount = ?, date = ?
+            WHERE id = ?
+        """, (transaction_type, category, amount, date, transaction_id))
+        conn.commit()
+        conn.close()
+
     def get_budget_overview(self):
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
