@@ -37,8 +37,12 @@ class BudgetOverview(tk.Toplevel):
         categories = [row[0] for row in rows]
         amounts = [row[1] for row in rows]
 
+        def autopct_format(pct, allvals):
+            absolute = int(pct/100.*sum(allvals))
+            return f"{pct:.1f}%\n({absolute:d})"
+
         fig, ax = plt.subplots(figsize=(8, 6))
-        ax.pie(amounts, labels=categories, autopct="%1.1f%%", startangle=140)
+        wedges, texts, autotexts = ax.pie(amounts, labels=categories, autopct=lambda pct: autopct_format(pct, amounts), startangle=140)
         ax.set_title(self.get_translation("budget_overview"))
 
         for widget in self.canvas_frame.winfo_children():
