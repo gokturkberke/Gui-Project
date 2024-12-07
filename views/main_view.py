@@ -30,6 +30,9 @@ class MainView(tk.Tk):
             button.pack(pady=5)
             self.button_widgets.append(button)
 
+        exit_button = tk.Button(self, text=self.get_translation("exit"), width=25, command=self.exit_app)
+        exit_button.pack(pady=5)
+
     def clear_frame(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -51,6 +54,9 @@ class MainView(tk.Tk):
 
     def get_translation(self, key, **kwargs):
         return self.viewmodel.get_translation(key, **kwargs)
+
+    def exit_app(self):
+        self.destroy()
 
     def refresh_ui(self):
         self.title(self.get_translation("title"))
