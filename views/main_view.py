@@ -1,13 +1,12 @@
-import tkinter as tk
-from tkinter import ttk
+import ttkbootstrap as ttk
 from views.transaction_view import TransactionView
 from views.settings_view import SettingsView
 from views.transaction_viewer import TransactionViewer
 from views.budget_overview import BudgetOverview
 
-class MainView(tk.Tk):
+class MainView(ttk.Window):
     def __init__(self, viewmodel):
-        super().__init__()
+        super().__init__(themename="litera")
         self.viewmodel = viewmodel
         self.title(self.get_translation("title"))
         self.geometry("600x400")
@@ -15,7 +14,7 @@ class MainView(tk.Tk):
 
     def init_main_menu(self):
         self.clear_frame()
-        self.label = tk.Label(self, text=self.get_translation("title"), font=("Arial", 20))
+        self.label = ttk.Label(self, text=self.get_translation("title"), font=("Arial", 20))
         self.label.pack(pady=20)
         buttons = [
             (self.get_translation("add_income"), self.open_add_income),
@@ -26,7 +25,7 @@ class MainView(tk.Tk):
         ]
         self.button_widgets = []
         for text, command in buttons:
-            button = tk.Button(self, text=text, width=25, command=command)
+            button = ttk.Button(self, text=text, width=25, command=command)
             button.pack(pady=5)
             self.button_widgets.append(button)
 

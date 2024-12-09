@@ -1,7 +1,7 @@
-import tkinter as tk
-from tkinter import messagebox
+import ttkbootstrap as ttk
+from ttkbootstrap.dialogs import Messagebox
 
-class TransactionView(tk.Toplevel):
+class TransactionView(ttk.Toplevel):
     def __init__(self, master, transaction_type, viewmodel):
         super().__init__(master)
         self.master = master
@@ -12,11 +12,11 @@ class TransactionView(tk.Toplevel):
         self.init_ui()
 
     def init_ui(self):
-        self.label = tk.Label(self, text=self.get_translation("add_transaction", type=self.transaction_type), font=("Arial", 16))
+        self.label = ttk.Label(self, text=self.get_translation("add_transaction", type=self.transaction_type), font=("Arial", 16))
         self.label.pack(pady=10)
-        self.category_var = tk.StringVar()
-        self.amount_var = tk.StringVar()
-        self.date_var = tk.StringVar()
+        self.category_var = ttk.StringVar()
+        self.amount_var = ttk.StringVar()
+        self.date_var = ttk.StringVar()
         fields = [
             (self.get_translation("category"), self.category_var),
             (self.get_translation("amount"), self.amount_var),
@@ -24,12 +24,12 @@ class TransactionView(tk.Toplevel):
         ]
         self.field_widgets = []
         for label, var in fields:
-            lbl = tk.Label(self, text=label)
+            lbl = ttk.Label(self, text=label)
             lbl.pack(anchor="w", padx=10)
-            entry = tk.Entry(self, textvariable=var)
+            entry = ttk.Entry(self, textvariable=var)
             entry.pack(fill="x", padx=10, pady=5)
             self.field_widgets.append((lbl, entry))
-        self.save_button = tk.Button(self, text=self.get_translation("save"), command=self.save_transaction)
+        self.save_button = ttk.Button(self, text=self.get_translation("save"), command=self.save_transaction)
         self.save_button.pack(pady=20)
 
     def save_transaction(self):
@@ -37,15 +37,15 @@ class TransactionView(tk.Toplevel):
         amount = self.amount_var.get().strip()
         date = self.date_var.get().strip()
         if not category or not amount or not date:
-            messagebox.showerror(self.get_translation("validation_error"), self.get_translation("validation_error"))
+            Messagebox.show_error(self.get_translation("validation_error"), self.get_translation("validation_error"))
             return
         try:
             amount = float(amount)
         except ValueError:
-            messagebox.showerror(self.get_translation("validation_error"), self.get_translation("amount_error"))
+            Messagebox.show_error(self.get_translation("validation_error"), self.get_translation("amount_error"))
             return
         self.viewmodel.save_transaction(self.transaction_type, category, amount, date)
-        messagebox.showinfo(self.get_translation("success"), self.get_translation("success", type=self.transaction_type))
+        Messagebox.show_info(self.get_translation("success"), self.get_translation("success", type=self.transaction_type))
         self.destroy()
 
     def get_translation(self, key, **kwargs):

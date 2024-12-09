@@ -1,12 +1,11 @@
-import tkinter as tk
-from tkinter import ttk
+import ttkbootstrap as ttk
 import sqlite3
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 DB_NAME = "finance_manager.db"
 
-class BudgetOverview(tk.Toplevel):
+class BudgetOverview(ttk.Toplevel):
     def __init__(self, master, viewmodel):
         super().__init__(master)
         self.master = master
@@ -16,10 +15,10 @@ class BudgetOverview(tk.Toplevel):
         self.init_ui()
 
     def init_ui(self):
-        self.chart_button = tk.Button(self, text=self.get_translation("generate_chart"), command=self.generate_chart)
+        self.chart_button = ttk.Button(self, text=self.get_translation("generate_chart"), command=self.generate_chart)
         self.chart_button.pack(pady=20)
 
-        self.canvas_frame = tk.Frame(self)
+        self.canvas_frame = ttk.Frame(self)
         self.canvas_frame.pack(expand=True, fill='both')
 
     def generate_chart(self):
