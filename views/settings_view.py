@@ -23,13 +23,16 @@ class SettingsView(tk.Toplevel):
     def set_language(self, lang):
         self.settings_viewmodel.set_language(lang)
         self.viewmodel.set_language(lang)
-        language_name = "English" if lang == "en" else "Türkçe"
+        language_name = self.settings_viewmodel.get_translation("language")
         messagebox.showinfo(self.settings_viewmodel.get_translation("language_changed", language=language_name), self.settings_viewmodel.get_translation("language_changed", language=language_name))
-        self.master.refresh_ui()
-        self.refresh_ui()
+        if self.master.winfo_exists():
+            self.master.refresh_ui()
+        if self.winfo_exists():
+            self.refresh_ui()
 
     def refresh_ui(self):
-        self.title(self.settings_viewmodel.get_translation("settings"))
-        self.label.config(text=self.settings_viewmodel.get_translation("language_settings"))
-        self.english_button.config(text="English")
-        self.turkish_button.config(text="Türkçe")
+        if self.winfo_exists():
+            self.title(self.settings_viewmodel.get_translation("settings"))
+            self.label.config(text=self.settings_viewmodel.get_translation("language_settings"))
+            self.english_button.config(text="English")
+            self.turkish_button.config(text="Türkçe")

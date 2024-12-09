@@ -1,18 +1,20 @@
 from models.transaction import Transaction
 import sqlite3
-from viewmodels.settings_viewmodel import TRANSLATIONS
+from viewmodels.settings_viewmodel import I18N
 
 DB_NAME = "finance_manager.db"
 
 class MainViewModel:
-    def __init__(self):
-        self.language = "en"
+    def __init__(self, language_code="en"):
+        self.language = language_code
+        self.i18n = I18N(self.language)
 
     def set_language(self, lang):
         self.language = lang
+        self.i18n = I18N(lang)
 
     def get_translation(self, key, **kwargs):
-        translation = TRANSLATIONS.get(self.language, {}).get(key, key)
+        translation = self.i18n.translations.get(key, key)
         try:
             return translation.format(**kwargs)
         except KeyError:
