@@ -99,18 +99,22 @@ class EditTransactionWindow(ttk.Toplevel):
         self.amount_var = ttk.StringVar(value=self.transaction_values[3])
         self.date_var = ttk.StringVar(value=self.transaction_values[1])
         self.type_var = ttk.StringVar(value=self.transaction_values[2])
+        self.type_options = ["Expense", "Income"]
 
         fields = [
             (self.settings_viewmodel.get_translation("category"), self.category_var),
             (self.settings_viewmodel.get_translation("amount"), self.amount_var),
             (self.settings_viewmodel.get_translation("date"), self.date_var),
-            (self.settings_viewmodel.get_translation("type"), self.type_var),
+            (self.settings_viewmodel.get_translation("type"), self.type_var, self.type_options),
         ]
         self.field_widgets = []
-        for label, var in fields:
+        for label, var, *options in fields:
             lbl = ttk.Label(self, text=label)
             lbl.pack(anchor="w", padx=10)
-            entry = ttk.Entry(self, textvariable=var)
+            if options:
+                entry = ttk.Combobox(self, textvariable=var, values=options[0], state="readonly") #readonly is used to prevent user from typing and deleting the value
+            else:
+                entry = ttk.Entry(self, textvariable=var)
             entry.pack(fill="x", padx=10, pady=5)
             self.field_widgets.append((lbl, entry))
 
