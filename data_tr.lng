@@ -36,3 +36,5 @@ total_income=Toplam Gelir
 total_expenses=Toplam Gider
 remaining=Kalan
 delete_trans=Silme Başarılı
+start_date=Başlangıç Tarihi
+end_date=Bitiş Tarihi

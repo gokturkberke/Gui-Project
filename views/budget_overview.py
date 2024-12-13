@@ -1,7 +1,10 @@
 import ttkbootstrap as ttk
 import sqlite3
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from ttkbootstrap.constants import *
+from ttkbootstrap.widgets import DateEntry
+
+import matplotlib.pyplot as plt
 
 DB_NAME = "finance_manager.db"
 
@@ -15,6 +18,16 @@ class BudgetOverview(ttk.Toplevel):
         self.init_ui()
 
     def init_ui(self):
+        self.start_date_label = ttk.Label(self, text=self.get_translation("start_date"))
+        self.start_date_label.pack(pady=5)
+        self.start_date_entry = DateEntry(self)
+        self.start_date_entry.pack(pady=5)
+
+        self.end_date_label = ttk.Label(self, text=self.get_translation("end_date"))
+        self.end_date_label.pack(pady=5)
+        self.end_date_entry = DateEntry(self)
+        self.end_date_entry.pack(pady=5)
+
         self.chart_button = ttk.Button(self, text=self.get_translation("generate_chart"), command=self.generate_charts)
         self.chart_button.pack(pady=20)
 
@@ -33,14 +46,16 @@ class BudgetOverview(ttk.Toplevel):
         self.generate_remaining_money_chart()
 
     def generate_income_chart(self):
+        start_date = self.start_date_entry.entry.get()
+        end_date = self.end_date_entry.entry.get() 
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("""
             SELECT category, SUM(amount)
             FROM transactions
-            WHERE type = 'Income'
+            WHERE type = 'Income' AND date BETWEEN ? AND ?
             GROUP BY category
-        """)
+        """, (start_date, end_date))
         rows = cursor.fetchall()
         conn.close()
 
@@ -63,14 +78,16 @@ class BudgetOverview(ttk.Toplevel):
         canvas.get_tk_widget().pack(side='top', expand=True, fill='both')
 
     def generate_expense_chart(self):
+        start_date = self.start_date_entry.entry.get()
+        end_date = self.end_date_entry.entry.get() 
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("""
             SELECT category, SUM(amount)
             FROM transactions
-            WHERE type = 'Expense'
+            WHERE type = 'Expense' AND date BETWEEN ? AND ?
             GROUP BY category
-        """)
+        """, (start_date, end_date))
         rows = cursor.fetchall()
         conn.close()
 
@@ -90,13 +107,16 @@ class BudgetOverview(ttk.Toplevel):
         canvas.get_tk_widget().pack(side='bottom', expand=True, fill='both')
     
     def generate_remaining_money_chart(self):
+        start_date = self.start_date_entry.entry.get()
+        end_date = self.end_date_entry.entry.get()
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("""
             SELECT type, SUM(amount)
             FROM transactions
+            WHERE date BETWEEN ? AND ?
             GROUP BY type
-        """)
+        """, (start_date, end_date))
         rows = cursor.fetchall()
         conn.close()
 
@@ -113,21 +133,15 @@ class BudgetOverview(ttk.Toplevel):
 
         fig, ax = plt.subplots(figsize=(12, 6))
         bars = ax.bar(labels, amounts, color=['green', 'red', 'blue'])
-
         ax.set_title(self.get_translation("income_vs_expense"))
-        ax.set_ylabel(self.get_translation("amount"))
-
-        for bar in bars:
-            yval = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), va='bottom')  # Display the value on top of the bar
 
         for widget in self.right_frame.winfo_children():
             widget.destroy()
 
         canvas = FigureCanvasTkAgg(fig, master=self.right_frame)
         canvas.draw()
-        canvas.get_tk_widget().pack(expand=True, fill='both')
-    
+        canvas.get_tk_widget().pack(side='top', expand=True, fill='both')
+            
     def get_translation(self, key, **kwargs):
         return self.viewmodel.get_translation(key, **kwargs)
 

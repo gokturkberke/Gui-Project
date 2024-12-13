@@ -36,3 +36,5 @@ total_income=Total Income
 total_expenses=Total Expense
 remaining=Remaining
 delete_trans=Deleted successfully
+start_date=Start Date
+end_date=End Date
