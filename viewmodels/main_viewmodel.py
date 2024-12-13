@@ -1,6 +1,7 @@
 from models.transaction import Transaction
 import sqlite3
 from viewmodels.settings_viewmodel import I18N
+from viewmodels.financial_goal_viewmodel import FinancialGoalViewModel
 
 DB_NAME = "finance_manager.db"
 
@@ -8,6 +9,7 @@ class MainViewModel:
     def __init__(self, language_code="en"):
         self.language = language_code
         self.i18n = I18N(self.language)
+        self.financial_goal_viewmodel = FinancialGoalViewModel()
 
     def set_language(self, lang):
         self.language = lang
@@ -71,3 +73,9 @@ class MainViewModel:
         conn.close()
         budget_data = {row[0]: {'allocated': 0, 'spent': row[1], 'remaining': 0} for row in rows}
         return budget_data
+    
+    def set_financial_goal(self, goal):
+        return self.financial_goal_viewmodel.set_financial_goal(goal)
+    
+    def get_financial_goal(self):
+        return self.financial_goal_viewmodel.get_financial_goal()

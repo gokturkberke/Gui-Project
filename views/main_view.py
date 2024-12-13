@@ -3,6 +3,7 @@ from views.transaction_view import TransactionView
 from views.settings_view import SettingsView
 from views.transaction_viewer import TransactionViewer
 from views.budget_overview import BudgetOverview
+from views.financial_goal_view import FinancialGoalView
 
 class MainView(ttk.Window):
     def __init__(self, viewmodel):
@@ -21,6 +22,7 @@ class MainView(ttk.Window):
             (self.get_translation("add_expense"), self.open_add_expense),
             (self.get_translation("view_transactions"), self.open_view_transactions),
             (self.get_translation("budget_overview"), self.open_budget_overview),
+            (self.get_translation("financial_goal"), self.open_financial_goal),
             (self.get_translation("settings"), self.open_settings),
         ]
         self.button_widgets = []
@@ -44,7 +46,10 @@ class MainView(ttk.Window):
 
     def open_budget_overview(self):
         self.budget_overview = BudgetOverview(self, self.viewmodel)
-
+    
+    def open_financial_goal(self):
+        self.financial_goal_view = FinancialGoalView(self, self.viewmodel)
+        
     def open_settings(self):
         SettingsView(self, self.viewmodel)
 
