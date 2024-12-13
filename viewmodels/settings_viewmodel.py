@@ -46,6 +46,15 @@ class I18N:
         except FileNotFoundError:
             raise ValueError("Language file not found.")
 
+TRANSLATIONS = {
+    "en": {
+        "category_error": "Category must contain only letters and spaces.",
+    },
+    "tr": {
+        "category_error": "Kategori sadece harfler ve boşluklar içermelidir.",
+    }
+}
+
 class SettingsViewModel:
     def __init__(self, language_code="en"):
         self.i18n = I18N(language_code)

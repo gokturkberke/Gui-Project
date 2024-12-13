@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from viewmodels.settings_viewmodel import SettingsViewModel
+import re #match regular expressions
 
 class TransactionViewer(ttk.Toplevel):
     def __init__(self, master, viewmodel):
@@ -151,9 +152,15 @@ class EditTransactionWindow(ttk.Toplevel):
         amount = self.amount_var.get().strip()
         date = self.date_entry.entry.get().strip()
         type_ = self.type_var.get().strip()
+        
         if not category or not amount or not date or not type_:
             Messagebox.show_error(self.settings_viewmodel.get_translation("validation_error"), self.settings_viewmodel.get_translation("validation_error"))
             return
+        
+        if not re.match("^[A-Za-z\s]+$", category):
+            Messagebox.show_error(self.settings_viewmodel.get_translation("validation_error"), self.settings_viewmodel.get_translation("category_error"))
+            return
+        
         try:
             amount = float(amount)
         except ValueError:
