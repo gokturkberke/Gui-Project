@@ -45,7 +45,8 @@ class TransactionViewer(ttk.Toplevel):
             self.tree.delete(row)
         transactions = self.viewmodel.get_transactions()
         for transaction in transactions:
-            self.tree.insert("", "end", values=(transaction.id, transaction.date, transaction.type, transaction.amount, transaction.category))
+            transaction_type = self.settings_viewmodel.get_translation(transaction.type.lower())
+            self.tree.insert("", "end", values=(transaction.id, transaction.date, transaction_type, transaction.amount, transaction.category))
     
     def sort_tree(self, col, reverse):
         if col.lower() == "amount":
