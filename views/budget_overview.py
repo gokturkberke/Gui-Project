@@ -11,7 +11,7 @@ class BudgetOverview(ttk.Toplevel):
         self.master = master
         self.viewmodel = viewmodel
         self.title(self.get_translation("budget_overview"))
-        self.geometry("1200x800")
+        self.geometry("1300x850")
         self.init_ui()
 
     def init_ui(self):
@@ -88,7 +88,7 @@ class BudgetOverview(ttk.Toplevel):
         canvas = FigureCanvasTkAgg(fig, master=self.left_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side='bottom', expand=True, fill='both')
-
+    
     def generate_remaining_money_chart(self):
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
@@ -104,13 +104,22 @@ class BudgetOverview(ttk.Toplevel):
         expense = sum(row[1] for row in rows if row[0] == 'Expense')
         remaining = income - expense
 
-        labels = ['Income', 'Expense', 'Remaining']
+        labels = [
+            self.get_translation("total_income"),
+            self.get_translation("total_expenses"),
+            self.get_translation("remaining")
+        ]
         amounts = [income, expense, remaining]
 
         fig, ax = plt.subplots(figsize=(12, 6))
-        wedges, texts, autotexts = ax.pie(amounts, labels=labels, autopct='%1.1f%%', startangle=140, wedgeprops=dict(width=0.3))
+        bars = ax.bar(labels, amounts, color=['green', 'red', 'blue'])
 
-        ax.set_title(self.get_translation("overall_financial_summary"))
+        ax.set_title(self.get_translation("income_vs_expense"))
+        ax.set_ylabel(self.get_translation("amount"))
+
+        for bar in bars:
+            yval = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), va='bottom')  # Display the value on top of the bar
 
         for widget in self.right_frame.winfo_children():
             widget.destroy()
@@ -118,7 +127,7 @@ class BudgetOverview(ttk.Toplevel):
         canvas = FigureCanvasTkAgg(fig, master=self.right_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(expand=True, fill='both')
-
+    
     def get_translation(self, key, **kwargs):
         return self.viewmodel.get_translation(key, **kwargs)
 

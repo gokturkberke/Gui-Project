@@ -45,9 +45,16 @@ class TransactionViewer(ttk.Toplevel):
         transactions = self.viewmodel.get_transactions()
         for transaction in transactions:
             self.tree.insert("", "end", values=(transaction.id, transaction.date, transaction.type, transaction.amount, transaction.category))
-
+    
     def sort_tree(self, col, reverse):
-        l = [(self.tree.set(k, col), k) for k in self.tree.get_children("")]
+        if col.lower() == "amount":
+            l = [(float(self.tree.set(k, col)), k) for k in self.tree.get_children("")]
+        elif col.lower() == "category":
+                l = [(self.tree.set(k, col).lower(), k) for k in self.tree.get_children("")]
+        elif col.lower() == "id":
+            l = [(int(self.tree.set(k, col)), k) for k in self.tree.get_children("")]
+        else:
+            l = [(self.tree.set(k, col), k) for k in self.tree.get_children("")]
         l.sort(reverse=reverse)
         for index, (val, k) in enumerate(l):
             self.tree.move(k, "", index)
@@ -71,7 +78,7 @@ class TransactionViewer(ttk.Toplevel):
         transaction_id = self.tree.item(selected_item, "values")[0]
         self.viewmodel.delete_transaction(transaction_id)
         self.tree.delete(selected_item)
-        Messagebox.show_info(self.settings_viewmodel.get_translation("success"), self.settings_viewmodel.get_translation("transaction_deleted"))
+        Messagebox.show_info(self.settings_viewmodel.get_translation("delete_trans"), self.settings_viewmodel.get_translation("transaction_deleted"))
 
     def refresh_ui(self):
         self.title(self.settings_viewmodel.get_translation("view_transactions"))
