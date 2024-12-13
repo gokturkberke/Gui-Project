@@ -3,7 +3,6 @@ import sqlite3
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from ttkbootstrap.constants import *
 from ttkbootstrap.widgets import DateEntry
-
 import matplotlib.pyplot as plt
 
 DB_NAME = "finance_manager.db"
@@ -28,8 +27,16 @@ class BudgetOverview(ttk.Toplevel):
         self.end_date_entry = DateEntry(self)
         self.end_date_entry.pack(pady=5)
 
-        self.chart_button = ttk.Button(self, text=self.get_translation("generate_chart"), command=self.generate_charts)
-        self.chart_button.pack(pady=20)
+        self.button_frame = ttk.Frame(self)
+        self.button_frame.pack(pady=20)
+        
+        self.chart_button = ttk.Button(self.button_frame, text=self.get_translation("generate_chart"), 
+                                    command=self.generate_charts)
+        self.chart_button.pack(side='left', padx=5)
+        
+        self.all_time_button = ttk.Button(self.button_frame, text=self.get_translation("show_all_time"), 
+                                        command=self.generate_all_time_charts)
+        self.all_time_button.pack(side='left', padx=5)
 
         self.canvas_frame = ttk.Frame(self)
         self.canvas_frame.pack(expand=True, fill='both')
@@ -40,6 +47,22 @@ class BudgetOverview(ttk.Toplevel):
         self.right_frame = ttk.Frame(self.canvas_frame)
         self.right_frame.pack(side='right', expand=True, fill='both')
 
+    def get_date_range(self):
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT MIN(date), MAX(date) FROM transactions")
+        min_date, max_date = cursor.fetchone()
+        conn.close()
+        return min_date, max_date
+
+    def generate_all_time_charts(self):
+        min_date, max_date = self.get_date_range()
+        self.start_date_entry.entry.delete(0, 'end')
+        self.start_date_entry.entry.insert(0, min_date)
+        self.end_date_entry.entry.delete(0, 'end')
+        self.end_date_entry.entry.insert(0, max_date)
+        self.generate_charts()
+        
     def generate_charts(self):
         self.generate_income_chart()
         self.generate_expense_chart()
@@ -64,10 +87,14 @@ class BudgetOverview(ttk.Toplevel):
 
         def autopct_format(pct, allvals):
             absolute = int(pct/100.*sum(allvals))
-            return f"{pct:.1f}%\n({absolute:d})"
+            return f"{pct:.1f}%\n(${absolute:,.2f})"
 
         fig, ax = plt.subplots(figsize=(6, 4))
-        wedges, texts, autotexts = ax.pie(amounts, labels=categories, autopct=lambda pct: autopct_format(pct, amounts), startangle=140)
+        wedges, texts, autotexts = ax.pie(amounts, labels=categories, 
+                                         autopct=lambda pct: autopct_format(pct, amounts), 
+                                         startangle=140)
+        plt.setp(autotexts, size=8, weight="bold")
+        plt.setp(texts, size=8)
         ax.set_title(self.get_translation("income_distribution_by_category"))
 
         for widget in self.left_frame.winfo_children():
@@ -96,16 +123,20 @@ class BudgetOverview(ttk.Toplevel):
 
         def autopct_format(pct, allvals):
             absolute = int(pct/100.*sum(allvals))
-            return f"{pct:.1f}%\n({absolute:d})"
+            return f"{pct:.1f}%\n(${absolute:,.2f})"
 
         fig, ax = plt.subplots(figsize=(6, 4))
-        wedges, texts, autotexts = ax.pie(amounts, labels=categories, autopct=lambda pct: autopct_format(pct, amounts), startangle=140)
+        wedges, texts, autotexts = ax.pie(amounts, labels=categories, 
+                                         autopct=lambda pct: autopct_format(pct, amounts), 
+                                         startangle=140)
+        plt.setp(autotexts, size=8, weight="bold")
+        plt.setp(texts, size=8)
         ax.set_title(self.get_translation("expense_distribution_by_category"))
 
         canvas = FigureCanvasTkAgg(fig, master=self.left_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side='bottom', expand=True, fill='both')
-    
+
     def generate_remaining_money_chart(self):
         start_date = self.start_date_entry.entry.get()
         end_date = self.end_date_entry.entry.get()
@@ -134,6 +165,13 @@ class BudgetOverview(ttk.Toplevel):
         fig, ax = plt.subplots(figsize=(12, 6))
         bars = ax.bar(labels, amounts, color=['green', 'red', 'blue'])
         ax.set_title(self.get_translation("income_vs_expense"))
+        
+        # Add value labels on top of each bar
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height,
+                   f'${height:,.2f}',
+                   ha='center', va='bottom')
 
         for widget in self.right_frame.winfo_children():
             widget.destroy()
@@ -141,10 +179,10 @@ class BudgetOverview(ttk.Toplevel):
         canvas = FigureCanvasTkAgg(fig, master=self.right_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side='top', expand=True, fill='both')
-            
-    def get_translation(self, key, **kwargs):
-        return self.viewmodel.get_translation(key, **kwargs)
 
+    def get_translation(self, key):
+        return self.viewmodel.get_translation(key)
+    
     def refresh_ui(self):
         self.title(self.get_translation("budget_overview"))
         self.chart_button.config(text=self.get_translation("generate_chart"))
