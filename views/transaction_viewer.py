@@ -68,7 +68,13 @@ class TransactionViewer(ttk.Toplevel):
     def edit_transaction(self):
         selected_item = self.tree.selection()
         if not selected_item:
-            Messagebox.show_warning(self.settings_viewmodel.get_translation("warning"), self.settings_viewmodel.get_translation("select_transaction"))
+            Messagebox.show_warning(
+                title=self.settings_viewmodel.get_translation("warning"),
+                message=self.settings_viewmodel.get_translation("select_transaction"),
+                alert=True,
+                width=400,
+                height=200
+            )
             return
 
         transaction_values = self.tree.item(selected_item, "values")
@@ -77,7 +83,13 @@ class TransactionViewer(ttk.Toplevel):
     def delete_transaction(self):
         selected_item = self.tree.selection()
         if not selected_item:
-            Messagebox.show_warning(self.settings_viewmodel.get_translation("warning"), self.settings_viewmodel.get_translation("select_transaction"))
+            Messagebox.show_warning(
+                title=self.settings_viewmodel.get_translation("warning"),
+                message=self.settings_viewmodel.get_translation("select_transaction"),
+                alert=True,
+                width=400,
+                height=200
+            )
             return
 
         transaction_id = self.tree.item(selected_item, "values")[0]
@@ -165,7 +177,7 @@ class EditTransactionWindow(ttk.Toplevel):
             Messagebox.show_error(self.settings_viewmodel.get_translation("validation_error"), self.settings_viewmodel.get_translation("validation_error"))
             return
         
-        if not re.match("^[A-Za-z\s]+$", category):
+        if not re.match(r"^[A-Za-z\s]+$", category):
             Messagebox.show_error(self.settings_viewmodel.get_translation("validation_error"), self.settings_viewmodel.get_translation("category_error"))
             return
         
