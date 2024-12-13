@@ -28,6 +28,9 @@ class TransactionViewer(ttk.Toplevel):
         self.tree.column("Category", width=100, anchor=ttk.CENTER)
 
         self.tree.pack(expand=True, fill='both')
+        
+        # Bind the click event to deselect the row
+        self.tree.bind("<Button-1>", self.on_tree_click)
 
         self.button_frame = ttk.Frame(self)
         self.button_frame.pack(pady=10)
@@ -91,6 +94,10 @@ class TransactionViewer(ttk.Toplevel):
         self.edit_button.config(text=self.settings_viewmodel.get_translation("edit"))
         self.delete_button.config(text=self.settings_viewmodel.get_translation("delete"))
         self.load_transactions()
+
+    def on_tree_click(self, event):
+        if not self.tree.identify_row(event.y):
+            self.tree.selection_remove(self.tree.selection())
 
 class EditTransactionWindow(ttk.Toplevel):
     def __init__(self, master, viewmodel, transaction_values):
