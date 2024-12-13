@@ -97,27 +97,39 @@ class EditTransactionWindow(ttk.Toplevel):
     def init_ui(self):
         self.category_var = ttk.StringVar(value=self.transaction_values[4])
         self.amount_var = ttk.StringVar(value=self.transaction_values[3])
-        self.date_var = ttk.StringVar(value=self.transaction_values[1])
+        # Replace StringVar with DateEntry 
+        self.date_entry = ttk.DateEntry(self, firstweekday=0, bootstyle="primary")
+        # Set initial date value
+        self.date_entry.entry.delete(0, "end")
+        self.date_entry.entry.insert(0, self.transaction_values[1])
+        
         self.type_var = ttk.StringVar(value=self.transaction_values[2])
         self.type_options = ["Expense", "Income"]
 
-        fields = [
-            (self.settings_viewmodel.get_translation("category"), self.category_var),
-            (self.settings_viewmodel.get_translation("amount"), self.amount_var),
-            (self.settings_viewmodel.get_translation("date"), self.date_var),
-            (self.settings_viewmodel.get_translation("type"), self.type_var, self.type_options),
-        ]
-        self.field_widgets = []
-        for label, var, *options in fields:
-            lbl = ttk.Label(self, text=label)
-            lbl.pack(anchor="w", padx=10)
-            if options:
-                entry = ttk.Combobox(self, textvariable=var, values=options[0], state="readonly") #readonly is used to prevent user from typing and deleting the value
-            else:
-                entry = ttk.Entry(self, textvariable=var)
-            entry.pack(fill="x", padx=10, pady=5)
-            self.field_widgets.append((lbl, entry))
+        # Category field
+        lbl_category = ttk.Label(self, text=self.settings_viewmodel.get_translation("category"))
+        lbl_category.pack(anchor="w", padx=10)
+        entry_category = ttk.Entry(self, textvariable=self.category_var)
+        entry_category.pack(fill="x", padx=10, pady=5)
 
+        # Amount field
+        lbl_amount = ttk.Label(self, text=self.settings_viewmodel.get_translation("amount")) 
+        lbl_amount.pack(anchor="w", padx=10)
+        entry_amount = ttk.Entry(self, textvariable=self.amount_var)
+        entry_amount.pack(fill="x", padx=10, pady=5)
+
+        # Date field
+        lbl_date = ttk.Label(self, text=self.settings_viewmodel.get_translation("date"))
+        lbl_date.pack(anchor="w", padx=10)
+        self.date_entry.pack(fill="x", padx=10, pady=5)
+
+        # Type field
+        lbl_type = ttk.Label(self, text=self.settings_viewmodel.get_translation("type"))
+        lbl_type.pack(anchor="w", padx=10)
+        type_combo = ttk.Combobox(self, textvariable=self.type_var, values=self.type_options, state="readonly")
+        type_combo.pack(fill="x", padx=10, pady=5)
+
+        # Button frame
         self.button_frame = ttk.Frame(self)
         self.button_frame.pack(pady=10)
 
@@ -130,7 +142,7 @@ class EditTransactionWindow(ttk.Toplevel):
     def save_transaction(self):
         category = self.category_var.get().strip()
         amount = self.amount_var.get().strip()
-        date = self.date_var.get().strip()
+        date = self.date_entry.entry.get().strip()
         type_ = self.type_var.get().strip()
         if not category or not amount or not date or not type_:
             Messagebox.show_error(self.settings_viewmodel.get_translation("validation_error"), self.settings_viewmodel.get_translation("validation_error"))

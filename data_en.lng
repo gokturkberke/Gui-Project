@@ -14,6 +14,7 @@ type=Type
 save=Save
 cancel=Cancel
 success={type} added successfully!
+success_title=Success
 transaction_deleted=Transaction deleted successfully!
 validation_error=All fields are required!
 amount_error=Amount must be a valid number!
