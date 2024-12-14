@@ -22,9 +22,12 @@ class FinancialGoalView(ttk.Toplevel):
         expense_limit = self.expense_limit_entry.get()
         income_goal = self.income_goal_entry.get()
         if self.viewmodel.set_financial_goal(expense_limit, income_goal):
-            messagebox.showinfo("Success", f"Your financial goals have been set!\nExpense Limit: ${expense_limit}\nIncome Goal: ${income_goal}")
+            messagebox.showinfo(
+                self.get_translation("success"),
+                self.get_translation("success_goal").format(expense_limit=expense_limit, income_goal=income_goal)
+            )
         else:
-            messagebox.showerror("Error", "Please enter valid numbers for both fields.")
+            messagebox.showerror( self.get_translation("error"), self.get_translation("error_goal"))
         
     def init_ui(self):
         self.expense_limit_label = ttk.Label(self, text=self.get_translation("enter_your_expense_limit"))
@@ -39,7 +42,7 @@ class FinancialGoalView(ttk.Toplevel):
         self.income_goal_entry = ttk.Entry(self)
         self.income_goal_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
 
-        self.submit_button = ttk.Button(self, text=self.get_translation("submit"), command=self.submit_goal)
+        self.submit_button = ttk.Button(self, text=self.get_translation("save"), command=self.submit_goal)
         self.submit_button.grid(row=0, column=4, columnspan=2, pady=20, padx=20)
         
         self.show_chart_button = ttk.Button(self, text=self.get_translation("show_chart"), command=self.show_chart)
@@ -52,28 +55,37 @@ class FinancialGoalView(ttk.Toplevel):
         expense_limit, income_goal = self.viewmodel.get_financial_goal()
         self.expense_limit_entry.insert(0, expense_limit or "")
         self.income_goal_entry.insert(0, income_goal or "")
-        
+
     def show_chart(self):
         expense_limit, income_goal = self.viewmodel.get_financial_goal()
         actual_expense = self.viewmodel.get_actual_expense()
         actual_income = self.viewmodel.get_actual_income()
-        
-        labels = ['Expense', 'Income']
+
+        labels = [self.get_translation("expense"), self.get_translation("income")]
         goals = [float(expense_limit), float(income_goal)]
         actuals = [actual_expense, actual_income]
 
         x = range(len(labels))
 
         fig, ax = plt.subplots()
-        ax.bar(x, goals, width=0.4, label='Goal', align='center')
-        ax.bar(x, actuals, width=0.4, label='Actual', align='edge')
+        bars1 = ax.bar(x, goals, width=0.4, label=self.get_translation("goal"), align='center', color='skyblue')
+        bars2 = ax.bar(x, actuals, width=0.4, label=self.get_translation("actual"), align='edge', color='lightgreen')
 
-        ax.set_xlabel('Category')
-        ax.set_ylabel('Amount')
-        ax.set_title('Financial Goals vs Actuals')
+        ax.set_xlabel(self.get_translation("category"))
+        ax.set_ylabel(self.get_translation("amount"))
+        ax.set_title(self.get_translation("financial_goals_vs_actuals"))
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
         ax.legend()
+
+        # Add data labels on top of the bars
+        for bar in bars1:
+            yval = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2.0, yval, f'{yval:.2f}', va='bottom')  # va: vertical alignment
+
+        for bar in bars2:
+            yval = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2.0, yval, f'{yval:.2f}', va='bottom')  # va: vertical alignment
 
         # Clear the previous chart if it exists
         for widget in self.chart_frame.winfo_children():
