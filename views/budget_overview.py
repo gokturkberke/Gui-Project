@@ -14,6 +14,7 @@ class BudgetOverview(ttk.Toplevel):
         self.viewmodel = viewmodel
         self.title(self.get_translation("budget_overview"))
         self.geometry("1300x850")
+        self.minsize(1300, 850)
         self.init_ui()
 
     def init_ui(self):

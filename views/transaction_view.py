@@ -9,6 +9,7 @@ class TransactionView(ttk.Toplevel):
         self.transaction_type = transaction_type
         self.title(self.get_translation("add_transaction", type=transaction_type))
         self.geometry("400x300")
+        self.resizable(False, False)
         self.init_ui()
 
     def init_ui(self):

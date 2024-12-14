@@ -11,6 +11,7 @@ class TransactionViewer(ttk.Toplevel):
         self.settings_viewmodel = SettingsViewModel(viewmodel.language)
         self.title(self.settings_viewmodel.get_translation("view_transactions"))
         self.geometry("800x400")
+        self.minsize(800,400)
         self.init_ui()
 
     def init_ui(self):

@@ -10,6 +10,7 @@ class SettingsView(ttk.Toplevel):
         self.settings_viewmodel = SettingsViewModel(viewmodel.language)
         self.title(self.settings_viewmodel.get_translation("settings"))
         self.geometry("400x200")
+        self.resizable(False, False)
         self.init_ui()
 
     def init_ui(self):
