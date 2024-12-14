@@ -74,8 +74,14 @@ class MainViewModel:
         budget_data = {row[0]: {'allocated': 0, 'spent': row[1], 'remaining': 0} for row in rows}
         return budget_data
     
-    def set_financial_goal(self, goal):
-        return self.financial_goal_viewmodel.set_financial_goal(goal)
-    
+    def set_financial_goal(self, expense_limit, income_goal):
+        return self.financial_goal_viewmodel.set_financial_goal(expense_limit, income_goal)
+
     def get_financial_goal(self):
         return self.financial_goal_viewmodel.get_financial_goal()
+
+    def get_actual_expense(self):
+        return self.financial_goal_viewmodel.get_actual_expense()
+
+    def get_actual_income(self):
+        return self.financial_goal_viewmodel.get_actual_income()

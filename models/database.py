@@ -5,6 +5,11 @@ DB_NAME = "finance_manager.db"
 def setup_database():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
+    
+    # Drop the financial_goals table if it exists
+    cursor.execute("DROP TABLE IF EXISTS financial_goals")
+    
+    # Create transactions table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,5 +19,15 @@ def setup_database():
             date TEXT NOT NULL
         )
     """)
+    
+    # Create financial_goals table with expense_limit and income_goal
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS financial_goals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            expense_limit TEXT NOT NULL,
+            income_goal TEXT NOT NULL
+        )
+    """)
+    
     conn.commit()
     conn.close()
