@@ -6,9 +6,6 @@ def setup_database():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # Drop the financial_goals table if it exists
-    cursor.execute("DROP TABLE IF EXISTS financial_goals")
-    
     # Create transactions table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS transactions (

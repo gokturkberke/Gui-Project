@@ -3,6 +3,7 @@ from tkinter import messagebox
 from viewmodels.financial_goal_viewmodel import FinancialGoalViewModel
 from viewmodels.settings_viewmodel import SettingsViewModel
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class FinancialGoalView(ttk.Toplevel):
     def __init__(self, master, viewmodel):
@@ -44,12 +45,19 @@ class FinancialGoalView(ttk.Toplevel):
         self.show_chart_button = ttk.Button(self, text=self.get_translation("show_chart"), command=self.show_chart)
         self.show_chart_button.grid(row=1, column=0, columnspan=2, pady=20, padx=20)
         
+        self.chart_frame = ttk.Frame(self)
+        self.chart_frame.grid(row=2, column=0, columnspan=5, pady=20, padx=20)
+
+        # Fetch and set the previously submitted financial goals
+        expense_limit, income_goal = self.viewmodel.get_financial_goal()
+        self.expense_limit_entry.insert(0, expense_limit or "")
+        self.income_goal_entry.insert(0, income_goal or "")
         
     def show_chart(self):
         expense_limit, income_goal = self.viewmodel.get_financial_goal()
         actual_expense = self.viewmodel.get_actual_expense()
         actual_income = self.viewmodel.get_actual_income()
-
+        
         labels = ['Expense', 'Income']
         goals = [float(expense_limit), float(income_goal)]
         actuals = [actual_expense, actual_income]
@@ -67,4 +75,11 @@ class FinancialGoalView(ttk.Toplevel):
         ax.set_xticklabels(labels)
         ax.legend()
 
-        plt.show()
+        # Clear the previous chart if it exists
+        for widget in self.chart_frame.winfo_children():
+            widget.destroy()
+
+        # Embed the chart in the Tkinter window
+        canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=ttk.BOTH, expand=True)
