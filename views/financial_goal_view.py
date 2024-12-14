@@ -12,7 +12,8 @@ class FinancialGoalView(ttk.Toplevel):
         self.viewmodel = viewmodel
         self.settings_viewmodel = SettingsViewModel(viewmodel.language)
         self.title(self.get_translation("financial_goal"))
-        self.geometry("1300x850")
+        self.geometry("1100x850")
+        self.resizable(False, False)
         self.init_ui()
 
     def get_translation(self, key, **kwargs):
@@ -46,10 +47,10 @@ class FinancialGoalView(ttk.Toplevel):
         self.submit_button.grid(row=0, column=4, columnspan=2, pady=20, padx=20)
         
         self.show_chart_button = ttk.Button(self, text=self.get_translation("show_chart"), command=self.show_chart)
-        self.show_chart_button.grid(row=1, column=0, columnspan=2, pady=20, padx=20)
+        self.show_chart_button.grid(row=0, column=6, columnspan=2, pady=20, padx=20)
         
         self.chart_frame = ttk.Frame(self)
-        self.chart_frame.grid(row=2, column=0, columnspan=5, pady=20, padx=20)
+        self.chart_frame.grid(row=2, column=0, columnspan=8, pady=20, padx=20)
 
         # Fetch and set the previously submitted financial goals
         expense_limit, income_goal = self.viewmodel.get_financial_goal()
@@ -67,7 +68,7 @@ class FinancialGoalView(ttk.Toplevel):
 
         x = range(len(labels))
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(10, 6))  # Increase the size of the chart
         bars1 = ax.bar(x, goals, width=0.4, label=self.get_translation("goal"), align='center', color='skyblue')
         bars2 = ax.bar(x, actuals, width=0.4, label=self.get_translation("actual"), align='edge', color='lightgreen')
 
