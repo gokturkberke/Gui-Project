@@ -2,6 +2,9 @@ import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from viewmodels.settings_viewmodel import SettingsViewModel
 import re #match regular expressions
+from tkinter import filedialog
+from fpdf import FPDF
+
 
 class TransactionViewer(ttk.Toplevel):
     def __init__(self, master, viewmodel):
@@ -42,6 +45,9 @@ class TransactionViewer(ttk.Toplevel):
         self.delete_button = ttk.Button(self.button_frame, text=self.settings_viewmodel.get_translation("delete"), command=self.delete_transaction)
         self.delete_button.pack(side=ttk.LEFT, padx=5)
 
+        self.export_pdf_button = ttk.Button(self.button_frame, text="Export to PDF", command=self.export_to_pdf)
+        self.export_pdf_button.pack(side=ttk.LEFT, padx=5)
+
         self.load_transactions()
 
     def load_transactions(self):
@@ -51,7 +57,43 @@ class TransactionViewer(ttk.Toplevel):
         for transaction in transactions:
             transaction_type = self.settings_viewmodel.get_translation(transaction.type.lower())
             self.tree.insert("", "end", values=(transaction.id, transaction.date, transaction_type, transaction.amount, transaction.category))
-    
+
+    def export_to_pdf(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")])
+        if not file_path:
+            return
+
+        transactions = self.viewmodel.get_transactions()
+
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt="Transaction Report", ln=True, align="C")
+
+        # Table Header
+        pdf.set_font("Arial", style="B", size=10)
+        pdf.cell(10, 10, "ID", border=1)
+        pdf.cell(40, 10, "Date", border=1)
+        pdf.cell(30, 10, "Type", border=1)
+        pdf.cell(30, 10, "Amount (USD)", border=1)
+        pdf.cell(50, 10, "Category", border=1)
+        pdf.ln()
+
+        # Table Content
+        pdf.set_font("Arial", size=10)
+        for transaction in transactions:
+            amount = -transaction.amount if transaction.type == "Expense" else transaction.amount
+            pdf.cell(10, 10, str(transaction.id), border=1)
+            pdf.cell(40, 10, transaction.date, border=1)
+            pdf.cell(30, 10, transaction.type, border=1)
+            pdf.cell(30, 10, f"${amount:,.2f}", border=1)  # Negative amount for expenses
+            pdf.cell(50, 10, transaction.category, border=1)
+            pdf.ln()
+
+        pdf.output(file_path)
+        Messagebox.show_info("Export Successful", "Transactions exported to PDF successfully!")
+
     def sort_tree(self, col, reverse):
         if col.lower() == "amount":
             l = [(float(self.tree.set(k, col)), k) for k in self.tree.get_children("")]

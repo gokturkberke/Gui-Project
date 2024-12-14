@@ -45,3 +45,6 @@ financial_goal=Financial Goal
 enter_your_expense_limit=Expense Limit
 enter_your_income_goal=Income Goal
 show_chart=Show Chart
+exit=Exit
+exit_confirmation_title=Closing the application
+exit_confirmation_message=Are you sure you want the close the application?

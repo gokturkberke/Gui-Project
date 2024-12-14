@@ -1,4 +1,5 @@
 import ttkbootstrap as ttk
+from tkinter import messagebox
 from views.transaction_view import TransactionView
 from views.settings_view import SettingsView
 from views.transaction_viewer import TransactionViewer
@@ -24,6 +25,7 @@ class MainView(ttk.Window):
             (self.get_translation("budget_overview"), self.open_budget_overview),
             (self.get_translation("financial_goal"), self.open_financial_goal),
             (self.get_translation("settings"), self.open_settings),
+            (self.get_translation("exit"), self.confirm_exit),
         ]
         self.button_widgets = []
         for text, command in buttons:
@@ -52,6 +54,13 @@ class MainView(ttk.Window):
         
     def open_settings(self):
         SettingsView(self, self.viewmodel)
+
+    def confirm_exit(self):
+        if messagebox.askyesno(
+            title=self.get_translation("exit_confirmation_title"),
+            message=self.get_translation("exit_confirmation_message")
+        ):
+            self.destroy()
 
     def get_translation(self, key, **kwargs):
         return self.viewmodel.get_translation(key, **kwargs)

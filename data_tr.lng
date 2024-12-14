@@ -45,3 +45,6 @@ financial_goal=Finansal Hedefler
 enter_your_expense_limit=Gider Limiti
 enter_your_income_goal=Gelir Hedefi
 show_chart=Grafiği Göster
+exit=Kapat
+exit_confirmation_title=Uygulamayı kapatıyoruz
+exit_confirmation_message=Uygulamayı kapatmak istediğine emin misin?
