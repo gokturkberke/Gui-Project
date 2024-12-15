@@ -80,8 +80,8 @@ class MainViewModel:
     def get_financial_goal(self):
         return self.financial_goal_viewmodel.get_financial_goal()
 
-    def get_actual_expense(self):
-        return self.financial_goal_viewmodel.get_actual_expense()
+    def get_actual_expense(self, start_date=None, end_date=None):
+        return self.financial_goal_viewmodel.get_actual_expense(start_date, end_date)
 
-    def get_actual_income(self):
-        return self.financial_goal_viewmodel.get_actual_income()
+    def get_actual_income(self, start_date=None, end_date=None):
+        return self.financial_goal_viewmodel.get_actual_income(start_date, end_date)
