@@ -54,11 +54,14 @@ class TransactionView(ttk.Toplevel):
             Messagebox.show_error(self.get_translation("validation_error"), self.get_translation("amount_error"))
             return
         self.viewmodel.save_transaction(self.transaction_type, category, amount, date)
-        success_msg = self.get_translation("success").format(type=self.transaction_type)
+        success_msg = self.get_translation("success", type=self.transaction_type)
         Messagebox.show_info(success_msg, self.get_translation("success_title"))
         self.destroy()
 
     def get_translation(self, key, **kwargs):
+        # Translate the transaction type if it exists
+        if "type" in kwargs:
+            kwargs["type"] = self.viewmodel.get_translation(kwargs["type"].lower())  # Translate 'income' or 'expense'
         return self.viewmodel.get_translation(key, **kwargs)
 
     def refresh_ui(self):

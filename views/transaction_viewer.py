@@ -45,7 +45,7 @@ class TransactionViewer(ttk.Toplevel):
         self.delete_button = ttk.Button(self.button_frame, text=self.settings_viewmodel.get_translation("delete"), command=self.delete_transaction)
         self.delete_button.pack(side=ttk.LEFT, padx=5)
 
-        self.export_pdf_button = ttk.Button(self.button_frame, text="Export to PDF", command=self.export_to_pdf)
+        self.export_pdf_button = ttk.Button(self.button_frame, text=self.settings_viewmodel.get_translation("export_to_pdf"), command=self.export_to_pdf)
         self.export_pdf_button.pack(side=ttk.LEFT, padx=5)
 
         self.load_transactions()

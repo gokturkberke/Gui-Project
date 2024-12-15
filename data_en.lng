@@ -48,3 +48,6 @@ show_chart=Show Chart
 exit=Exit
 exit_confirmation_title=Closing the application
 exit_confirmation_message=Are you sure you want the close the application?
+export_to_pdf=Export to PDF
+goal=Goal
+actual=Actual
