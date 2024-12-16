@@ -15,6 +15,8 @@ class TransactionViewer(ttk.Toplevel):
         self.title(self.settings_viewmodel.get_translation("view_transactions"))
         self.geometry("800x400")
         self.minsize(800,400)
+        self.transactions = self.load_transactions()
+        self.translate_categories()
         self.init_ui()
 
     def init_ui(self):
@@ -48,13 +50,19 @@ class TransactionViewer(ttk.Toplevel):
         self.export_pdf_button = ttk.Button(self.button_frame, text=self.settings_viewmodel.get_translation("export_to_pdf"), command=self.export_to_pdf)
         self.export_pdf_button.pack(side=ttk.LEFT, padx=5)
 
-        self.load_transactions()
+        self.load_data()
 
     def load_transactions(self):
+        return self.viewmodel.get_transactions()
+
+    def translate_categories(self):
+        for transaction in self.transactions:
+            transaction.category = self.viewmodel.translate_category(transaction.category)
+
+    def load_data(self):
         for row in self.tree.get_children():
             self.tree.delete(row)
-        transactions = self.viewmodel.get_transactions()
-        for transaction in transactions:
+        for transaction in self.transactions:
             transaction_type = self.settings_viewmodel.get_translation(transaction.type.lower())
             self.tree.insert("", "end", values=(transaction.id, transaction.date, transaction_type, transaction.amount, transaction.category))
 
@@ -148,7 +156,7 @@ class TransactionViewer(ttk.Toplevel):
         self.tree.heading("Category", text=self.settings_viewmodel.get_translation("category"))
         self.edit_button.config(text=self.settings_viewmodel.get_translation("edit"))
         self.delete_button.config(text=self.settings_viewmodel.get_translation("delete"))
-        self.load_transactions()
+        self.load_data()
 
     def on_tree_click(self, event):
         if not self.tree.identify_row(event.y):

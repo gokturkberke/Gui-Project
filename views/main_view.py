@@ -70,7 +70,10 @@ class MainView(ttk.Window):
         self.init_main_menu()
         if hasattr(self, 'transaction_view'):
             self.transaction_view.refresh_ui()
-        if hasattr(self, 'transaction_viewer'):
-            self.transaction_viewer.refresh_ui()
+        if hasattr(self, 'transaction_viewer') and self.transaction_viewer:
+            self.transaction_viewer.clear_frame()
+            self.transaction_viewer.transactions = self.transaction_viewer.load_transactions()
+            self.transaction_viewer.translate_categories()
+            self.transaction_viewer.init_ui()
         if hasattr(self, 'budget_overview'):
             self.budget_overview.refresh_ui()

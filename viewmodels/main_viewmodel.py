@@ -85,3 +85,6 @@ class MainViewModel:
 
     def get_actual_income(self, start_date=None, end_date=None):
         return self.financial_goal_viewmodel.get_actual_income(start_date, end_date)
+
+    def translate_category(self, category):
+        return self.get_translation(category)
