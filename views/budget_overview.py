@@ -15,8 +15,8 @@ class BudgetOverview(ttk.Toplevel):
         self.master = master
         self.viewmodel = viewmodel
         self.title(self.get_translation("budget_overview"))
-        self.geometry("1300x850")
-        self.minsize(1300, 850)
+        self.geometry("1300x1000")
+        self.minsize(1300, 1000)
         self.init_ui()
 
     def init_ui(self):
@@ -110,7 +110,7 @@ class BudgetOverview(ttk.Toplevel):
         wedges, texts, autotexts = ax.pie(amounts, labels=categories, 
                                          autopct=lambda pct: autopct_format(pct, amounts), 
                                          startangle=140)
-        plt.setp(autotexts, size=8, weight="bold")
+        plt.setp(autotexts, size=8)
         plt.setp(texts, size=8)
         ax.set_title(self.get_translation("income_distribution_by_category"))
 
@@ -123,7 +123,7 @@ class BudgetOverview(ttk.Toplevel):
 
     def generate_expense_chart(self):
         start_date = self.start_date_entry.entry.get()
-        end_date = self.end_date_entry.entry.get() 
+        end_date = self.end_date_entry.entry.get()
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("""
@@ -138,18 +138,12 @@ class BudgetOverview(ttk.Toplevel):
         categories = [row[0] for row in rows]
         amounts = [row[1] for row in rows]
 
-        def autopct_format(pct, allvals):
-            absolute = int(pct/100.*sum(allvals))
-            return f"{pct:.1f}%\n(${absolute:,.2f})"
-
+        # Create the pie chart
         fig, ax = plt.subplots(figsize=(6, 4))
-        wedges, texts, autotexts = ax.pie(amounts, labels=categories, 
-                                         autopct=lambda pct: autopct_format(pct, amounts), 
-                                         startangle=140)
-        plt.setp(autotexts, size=8, weight="bold")
-        plt.setp(texts, size=8)
+        ax.pie(amounts, labels=categories, startangle=140)  # Removed autopct to hide labels
         ax.set_title(self.get_translation("expense_distribution_by_category"))
 
+        # Embed the chart in the Tkinter window
         canvas = FigureCanvasTkAgg(fig, master=self.left_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side='bottom', expand=True, fill='both')
