@@ -51,3 +51,5 @@ exit_confirmation_message=Uygulamayı kapatmak istediğine emin misin?
 export_to_pdf=PDF'ye aktar
 goal=Hedef
 actual=Gerçek
+invalid_date=Geçersiz Tarih
+invalid_date_msg=Bitiş tarihi başlangıç tarihinden önce olamaz.

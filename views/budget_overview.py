@@ -4,6 +4,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from ttkbootstrap.constants import *
 from ttkbootstrap.widgets import DateEntry
 import matplotlib.pyplot as plt
+from tkinter import messagebox
+from datetime import datetime
 
 DB_NAME = "finance_manager.db"
 
@@ -22,11 +24,13 @@ class BudgetOverview(ttk.Toplevel):
         self.start_date_label.pack(pady=5)
         self.start_date_entry = DateEntry(self)
         self.start_date_entry.pack(pady=5)
+        self.start_date_entry.bind("<<DateEntrySelected>>", self.validate_date_range)
 
         self.end_date_label = ttk.Label(self, text=self.get_translation("end_date"))
         self.end_date_label.pack(pady=5)
         self.end_date_entry = DateEntry(self)
         self.end_date_entry.pack(pady=5)
+        self.end_date_entry.bind("<<DateEntrySelected>>", self.validate_date_range)
 
         self.button_frame = ttk.Frame(self)
         self.button_frame.pack(pady=20)
@@ -48,6 +52,16 @@ class BudgetOverview(ttk.Toplevel):
         self.right_frame = ttk.Frame(self.canvas_frame)
         self.right_frame.pack(side='right', expand=True, fill='both')
 
+    def validate_date_range(self, event=None):
+        start_date = self.start_date_entry.entry.get()
+        end_date = self.end_date_entry.entry.get()
+        if start_date and end_date and start_date > end_date:
+            messagebox.showwarning(self.get_translation("invalid_date"), self.get_translation("invalid_date_msg"))
+            self.end_date_entry.entry.delete(0, 'end')
+            self.end_date_entry.entry.insert(0, start_date)
+            return False
+        return True
+    
     def get_date_range(self):
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
@@ -65,6 +79,8 @@ class BudgetOverview(ttk.Toplevel):
         self.generate_charts()
         
     def generate_charts(self):
+        if not self.validate_date_range():
+            return
         self.generate_income_chart()
         self.generate_expense_chart()
         self.generate_remaining_money_chart()

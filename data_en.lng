@@ -51,3 +51,5 @@ exit_confirmation_message=Are you sure you want the close the application?
 export_to_pdf=Export to PDF
 goal=Goal
 actual=Actual
+invalid_date=Invalid Date
+invalid_date_msg=End date cannot be before start date.

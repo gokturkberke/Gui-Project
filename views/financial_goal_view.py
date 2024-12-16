@@ -13,7 +13,7 @@ class FinancialGoalView(ttk.Toplevel):
         self.viewmodel = viewmodel
         self.settings_viewmodel = SettingsViewModel(viewmodel.language)
         self.title(self.get_translation("financial_goal"))
-        self.geometry("1100x850")
+        self.geometry("1150x850")
         self.resizable(False, False)
         self.init_ui()
 
