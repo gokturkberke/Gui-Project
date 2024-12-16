@@ -5,7 +5,6 @@ from viewmodels.settings_viewmodel import SettingsViewModel
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from ttkbootstrap.widgets import DateEntry
-from datetime import datetime
 
 class FinancialGoalView(ttk.Toplevel):
     def __init__(self, master, viewmodel):
@@ -58,16 +57,14 @@ class FinancialGoalView(ttk.Toplevel):
         self.start_date_label = ttk.Label(self, text=self.get_translation("start_date"))
         self.start_date_label.grid(row=1, column=0, padx=20, pady=20, sticky="e")
 
-        self.start_date_entry = DateEntry(self, dateformat='%Y-%m-%d')
+        self.start_date_entry = DateEntry(self)
         self.start_date_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
-        self.start_date_entry.bind("<<DateEntrySelected>>", self.validate_date_range)
 
         self.end_date_label = ttk.Label(self, text=self.get_translation("end_date"))
         self.end_date_label.grid(row=1, column=2, padx=20, pady=20, sticky="e")
 
-        self.end_date_entry = DateEntry(self, dateformat='%Y-%m-%d')
+        self.end_date_entry = DateEntry(self)
         self.end_date_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
-        self.end_date_entry.bind("<<DateEntrySelected>>", self.validate_date_range)
 
         self.all_time_button = ttk.Button(self, text=self.get_translation("show_all_time"), command=self.show_all_time_chart)
         self.all_time_button.grid(row=1, column=5, padx=20, pady=20, sticky="w")
@@ -76,16 +73,6 @@ class FinancialGoalView(ttk.Toplevel):
         expense_limit, income_goal = self.viewmodel.get_financial_goal()
         self.expense_limit_entry.insert(0, expense_limit or "")
         self.income_goal_entry.insert(0, income_goal or "")
-
-    def validate_date_range(self, event=None):
-        start_date = self.start_date_entry.entry.get()
-        end_date = self.end_date_entry.entry.get()
-        if start_date and end_date and start_date > end_date:
-            messagebox.showwarning(self.get_translation("invalid_date"), self.get_translation("invalid_date_msg"))
-            self.end_date_entry.entry.delete(0, 'end')
-            self.end_date_entry.entry.insert(0, start_date)
-            return False
-        return True
 
     def show_all_time_chart(self):
         # Fetch the financial goals
@@ -134,10 +121,6 @@ class FinancialGoalView(ttk.Toplevel):
         
     
     def show_chart(self):
-        # Validate the date range
-        if not self.validate_date_range():
-            return
-
         # Fetch the financial goals
         expense_limit, income_goal = self.viewmodel.get_financial_goal()
 
