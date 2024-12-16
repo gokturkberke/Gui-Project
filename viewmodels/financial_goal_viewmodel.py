@@ -7,8 +7,6 @@ class FinancialGoalViewModel:
         self.language = language
 
     def get_translation(self, key, **kwargs):
-        # Placeholder for translation method
-        # You might want to implement this based on your translation logic
         return key
 
     def set_financial_goal(self, expense_limit, income_goal):
