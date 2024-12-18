@@ -6,6 +6,7 @@ from ttkbootstrap.widgets import DateEntry
 import matplotlib.pyplot as plt
 from tkinter import messagebox
 from datetime import datetime
+from viewmodels.settings_viewmodel import SettingsViewModel
 
 DB_NAME = "finance_manager.db"
 
@@ -14,7 +15,8 @@ class BudgetOverview(ttk.Toplevel):
         super().__init__(master)
         self.master = master
         self.viewmodel = viewmodel
-        self.title(self.get_translation("budget_overview"))
+        self.settings_viewmodel = SettingsViewModel(viewmodel.language)
+        self.title(self.settings_viewmodel.get_translation("budget_overview"))
         self.geometry("1300x1000")
         self.minsize(1300, 1000)
         self.init_ui()
@@ -99,7 +101,7 @@ class BudgetOverview(ttk.Toplevel):
         rows = cursor.fetchall()
         conn.close()
 
-        categories = [row[0] for row in rows]
+        categories = [self.viewmodel.translate_category(row[0]) for row in rows]
         amounts = [row[1] for row in rows]
 
         def autopct_format(pct, allvals):
@@ -135,7 +137,7 @@ class BudgetOverview(ttk.Toplevel):
         rows = cursor.fetchall()
         conn.close()
 
-        categories = [row[0] for row in rows]
+        categories = [self.viewmodel.translate_category(row[0]) for row in rows]
         amounts = [row[1] for row in rows]
 
         # Create the pie chart
