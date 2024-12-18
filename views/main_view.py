@@ -71,7 +71,7 @@ class MainView(ttk.Window):
         if hasattr(self, 'transaction_view'):
             self.transaction_view.refresh_ui()
         if hasattr(self, 'transaction_viewer') and self.transaction_viewer:
-            self.transaction_viewer.clear_frame()
+            #self.transaction_viewer.clear_frame()
             self.transaction_viewer.transactions = self.transaction_viewer.load_transactions()
             self.transaction_viewer.translate_categories()
             self.transaction_viewer.init_ui()
