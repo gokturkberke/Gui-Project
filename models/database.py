@@ -12,8 +12,8 @@ def setup_database():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             type TEXT NOT NULL,
             category TEXT NOT NULL,
-            amount REAL NOT NULL,
-            date TEXT NOT NULL
+            amount FLOAT NOT NULL,
+            date DATE NOT NULL
         )
     """)
     
